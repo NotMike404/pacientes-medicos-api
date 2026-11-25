@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -15,11 +15,17 @@ export class PacientesService {
     });
   }
 
-  create(data: any) {
-    return this.prisma.paciente.create({
-      data,
-    });
-  }
+        async create(data: any) {
+      try {
+        return await this.prisma.paciente.create({
+          data,
+        });
+      } catch {
+        throw new BadRequestException(
+          'El correo electrónico ya está registrado',
+        );
+      }
+    }
 
   update(id: number, data: any) {
     return this.prisma.paciente.update({
