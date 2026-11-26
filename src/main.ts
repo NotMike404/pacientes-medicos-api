@@ -2,6 +2,8 @@ import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';  // Activa la validación de todos los DTOs.
+import { PrismaExceptionFilter } from './prisma/prisma-exception.filter'
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,6 +15,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true, // En vez de dejar pasar whitelist silenciosamente, rechaza la petición con 400 Bad Request.
     }),
   );
+app.useGlobalFilters(new PrismaExceptionFilter())
 
   await app.listen(process.env.PORT ?? 3000);
 }
