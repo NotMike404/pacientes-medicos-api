@@ -1,0 +1,23 @@
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
+import * as jwt from 'jsonwebtoken'
+
+@Injectable()
+export class JwtAuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest()
+    const header = request.headers.authorization
+
+    if (!header || !header.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Token no proporcionado')
+    }
+
+    try {
+      request.user = jwt.verify(header.split(' ')[1], process.env.JWT_SECRET as string)
+      return true
+    } catch {
+      throw new UnauthorizedException('Token inválido o expirado')
+    }
+  }
+}
+// Guard de autenticación: verifica que exista un JWT válido.
+// En Express verifyToken era un middleware, En Nest el equivalente es un Guard.
