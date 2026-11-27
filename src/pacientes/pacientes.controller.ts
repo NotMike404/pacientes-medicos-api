@@ -11,8 +11,14 @@ import {
 import { PacientesService } from './pacientes.service';
 import { CreatePacienteDto } from './dto/create-paciente.dto';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('pacientes')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('RECEPCIONISTA')
 export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) {}
 
