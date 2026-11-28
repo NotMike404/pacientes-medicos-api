@@ -1,11 +1,14 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { AuthService } from './auth.service';
+import { Public } from './decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // Se puede registrar una cuenta sin iniciar sesión.
+  @Public()
   @Post('register')
   register(
     @Body()
@@ -22,6 +25,8 @@ export class AuthController {
     );
   }
 
+  // Se puede entrar sin token porque aquí se obtiene el token.
+  @Public()
   @Post('login')
   login(
     @Body()
@@ -33,4 +38,3 @@ export class AuthController {
     return this.authService.login(body.email, body.password);
   }
 }
-// Controller de autenticación: recibe los datos y llama al AuthService
